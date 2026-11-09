@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Pembelajaran Kelas 3 SD - SD Negeri Banyurip</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+        .cert-font {
+            font-family: 'Cinzel', serif;
+        }
+        .bg-pattern {
+            background-image: radial-gradient(#22c55e 0.75px, transparent 0.75px), radial-gradient(#22c55e 0.75px, #f0fdf4 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0,15px 15px;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen text-gray-800 flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-emerald-600 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
+                <div class="bg-white p-2 rounded-full text-emerald-600 shadow">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold leading-tight">Petualangan Belajar Kelas III</h1>
+                    <p class="text-xs text-emerald-100">SD Negeri Banyurip • Wali Kelas: Widowati SN, S.Pd.</p>
+                </div>
+            </div>
+            
+            <div id="studentDisplay" class="hidden md:flex items-center bg-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold border border-emerald-500">
+                <i class="fa-solid fa-user-graduate mr-2 text-yellow-300"></i>
+                <span id="navStudentName">Siswa</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- BANNER MOTIVASI -->
+        <div class="bg-amber-100 border-l-4 border-amber-500 text-amber-900 p-4 rounded-r-xl mb-6 shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-lightbulb text-amber-500 text-2xl"></i>
+                <p class="font-bold text-sm md:text-base">"Waktu bermain ada, waktu belajar juga harus ada!" 🌟</p>
+            </div>
+            <span class="hidden sm:inline text-xs font-semibold bg-amber-200 px-3 py-1 rounded-full">Semangat Belajar!</span>
+        </div>
+
+        <!-- DASHBOARD AWAL (INPUT NAMA) -->
+        <section id="secDashboard" class="bg-white rounded-3xl p-6 md:p-10 card-shadow border-2 border-emerald-100 text-center max-w-xl mx-auto">
+            <div class="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-emerald-800 mb-2">Selamat Datang!</h2>
+            <p class="text-gray-600 mb-6">Game Pembelajaran Interaktif Kelas III SD: <strong>Bahasa Indonesia (Bab 4) & Bahasa Inggris (Parts of House)</strong></p>
+
+            <form id="formStart" onsubmit="saveStudentName(event)" class="space-y-4">
+                <div class="text-left">
+                    <label class="block text-sm font-bold text-gray-700 mb-1" for="inputName">Masukkan Nama Lengkap Siswa:</label>
+                    <input type="text" id="inputName" required placeholder="Contoh: Siti Rahmawati" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-lg">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl text-lg shadow-lg transform transition active:scale-95 flex items-center justify-center">
+                    <i class="fa-solid fa-play mr-2"></i> Mulai Bermain & Belajar
+                </button>
+            </form>
+        </section>
+
+        <!-- MENU UTAMA -->
+        <section id="secMenu" class="hidden space-y-6">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-emerald-800">Pilih Menu Pembelajaran</h2>
+                <p class="text-gray-600">Pelajari rangkuman materi lengkap sebelum memulai kuis evaluasi!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Baca Materi -->
+                <div onclick="showSection('secMateri')" class="bg-white rounded-2xl p-6 card-shadow border-b-4 border-blue-500 hover:shadow-2xl transition cursor-pointer transform hover:-translate-y-1 flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Rangkuman Materi</h3>
+                    <p class="text-sm text-gray-600 flex-grow">Materi Bahasa Indonesia Bab 4 & Bahasa Inggris Bagian-Bagian Rumah.</p>
+                    <button class="mt-4 bg-blue-500 text-white font-bold px-4 py-2 rounded-lg text-sm w-full">Buka Materi</button>
+                </div>
+
+                <!-- Card 2: Kuis 50 Soal -->
+                <div onclick="startQuiz()" class="bg-white rounded-2xl p-6 card-shadow border-b-4 border-emerald-500 hover:shadow-2xl transition cursor-pointer transform hover:-translate-y-1 flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Kuis Tantangan (50 Soal)</h3>
+                    <p class="text-sm text-gray-600 flex-grow">25 Bahasa Indonesia & 25 Bahasa Inggris! Memiliki 3 nyawa, timer, & sertifikat.</p>
+                    <button class="mt-4 bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-sm w-full">Mulai Kuis</button>
+                </div>
+
+                <!-- Card 3: Game Tebak Gambar -->
+                <div onclick="startIcebreaking()" class="bg-white rounded-2xl p-6 card-shadow border-b-4 border-purple-500 hover:shadow-2xl transition cursor-pointer transform hover:-translate-y-1 flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Tebak Gambar (Icebreaking)</h3>
+                    <p class="text-sm text-gray-600 flex-grow">Permainan tebak gambar bagian rumah dan kosakata saat siswa merasa jenuh.</p>
+                    <button class="mt-4 bg-purple-600 text-white font-bold px-4 py-2 rounded-lg text-sm w-full">Main Sekarang</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION MATERI LENGKAP -->
+        <section id="secMateri" class="hidden space-y-6">
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow border border-emerald-100">
+                <button onclick="showSection('secMenu')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg flex items-center text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Menu
+                </button>
+                <h2 class="text-xl font-bold text-emerald-800">Materi Lengkap Kelas III SD</h2>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 card-shadow space-y-6 text-gray-700 leading-relaxed custom-scrollbar max-h-[75vh] overflow-y-auto">
+                
+                <!-- BAHASA INDONESIA -->
+                <article class="border-b pb-6">
+                    <h3 class="text-2xl font-bold text-emerald-700 mb-3 flex items-center">
+                        <i class="fa-solid fa-book-bookmark mr-3 text-emerald-500"></i> I. BAHASA INDONESIA: Bab 4 "Senyum di Sekitarku"
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                            <h4 class="font-bold text-emerald-800 mb-2">1. Petugas & Pekerja di Sekitar Kita</h4>
+                            <p class="text-sm mb-2">Di lingkungan sekitar kita, terdapat berbagai profesi petugas yang bekerja giat:</p>
+                            <ul class="list-disc pl-5 text-sm space-y-1">
+                                <li><strong>Pelaut / Nelayan:</strong> Mengarungi samudera luas untuk mencari ikan (Seperti pada lagu <em>"Nenek Moyangku"</em> ciptaan Ibu Sud).</li>
+                                <li><strong>Petani:</strong> Bercocok tanam di ladang/sawah (memupuk, merawat, dan memanen hasil bumi).</li>
+                                <li><strong>Pedagang:</strong> Berjualan barang/kebutuhan di pasar dengan jujur.</li>
+                                <li><strong>Polisi:</strong> Menjaga keamanan dan mengatur lalu lintas.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                            <h4 class="font-bold text-blue-800 mb-2">2. Gambar Ilustrasi & Cara Mengemukakan Pendapat</h4>
+                            <p class="text-sm mb-2"><strong>Gambar Ilustrasi:</strong> Gambar yang berfungsi memperjelas maksud cerita atau bacaan.</p>
+                            <p class="text-sm mb-2"><strong>Unsur yang Dinilai dari Gambar Ilustrasi:</strong> Kesesuaian gambar, pewarnaan, dan letaknya dalam bacaan.</p>
+                            <p class="text-sm"><strong>Cara Berpendapat:</strong> Menyampaikan pikiran tentang gambar/kejadian dengan tutur kata yang <strong>sopan</strong> dan disertai <strong>alasan logis</strong>.</p>
+                        </div>
+
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
+                            <h4 class="font-bold text-amber-800 mb-2">3. Ide Pokok & Ide Pendukung</h4>
+                            <ul class="list-disc pl-5 text-sm space-y-1">
+                                <li><strong>Ide Pokok:</strong> Hal terpenting atau gagasan utama yang dibahas di dalam paragraf/bacaan.</li>
+                                <li><strong>Ide Pendukung:</strong> Hal-hal atau kalimat penjelas yang berfungsi melengkapi ide pokok.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-purple-50 p-4 rounded-xl border border-purple-200">
+                            <h4 class="font-bold text-purple-800 mb-2">4. Kalimat Aktif dan Kalimat Pasif</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                <div class="bg-white p-3 rounded-lg border border-purple-300">
+                                    <p class="font-bold text-purple-700">Kalimat Aktif (Subjek Melakukan):</p>
+                                    <p class="text-xs text-gray-600 mb-1">Menggunakan kata kerja berawalan <strong>me-</strong>.</p>
+                                    <p class="font-semibold text-gray-800">Contoh: "Kakek memupuk tanaman padi."</p>
+                                    <p class="font-semibold text-gray-800">Contoh: "Kelinci mengejar Kucing."</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-lg border border-purple-300">
+                                    <p class="font-bold text-purple-700">Kalimat Pasif (Subjek Dikenai):</p>
+                                    <p class="text-xs text-gray-600 mb-1">Menggunakan kata kerja berawalan <strong>di-</strong>.</p>
+                                    <p class="font-semibold text-gray-800">Contoh: "Tanaman padi dirawat Kakek."</p>
+                                    <p class="font-semibold text-gray-800">Contoh: "Kelinci dikejar Kucing."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- BAHASA INGGRIS -->
+                <article>
+                    <h3 class="text-2xl font-bold text-emerald-700 mb-3 flex items-center">
+                        <i class="fa-solid fa-language mr-3 text-emerald-500"></i> II. BAHASA INGGRIS: Unit "Parts of House"
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-teal-50 p-4 rounded-xl border border-teal-200">
+                            <h4 class="font-bold text-teal-800 mb-2">1. Vocabulary: Bagian-Bagian Rumah (Parts of House)</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                                <div class="bg-white p-2 rounded border">🛏️ <strong>Bedroom:</strong> Kamar tidur</div>
+                                <div class="bg-white p-2 rounded border">🛁 <strong>Bathroom:</strong> Kamar mandi</div>
+                                <div class="bg-white p-2 rounded border">🛋️ <strong>Living room:</strong> Ruang tamu</div>
+                                <div class="bg-white p-2 rounded border">🍽️ <strong>Dining room:</strong> Ruang makan</div>
+                                <div class="bg-white p-2 rounded border">🍳 <strong>Kitchen:</strong> Dapur</div>
+                                <div class="bg-white p-2 rounded border">🏡 <strong>Yard / Garden:</strong> Halaman / Kebun</div>
+                                <div class="bg-white p-2 rounded border">📦 <strong>Storage room:</strong> Gudang</div>
+                                <div class="bg-white p-2 rounded border">🚗 <strong>Garage:</strong> Garasi</div>
+                                <div class="bg-white p-2 rounded border">🏠 <strong>Roof:</strong> Atap rumah</div>
+                                <div class="bg-white p-2 rounded border">🪵 <strong>Chimney:</strong> Cerobong asap</div>
+                                <div class="bg-white p-2 rounded border">🌿 <strong>Terrace:</strong> Teras</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-sky-50 p-4 rounded-xl border border-sky-200">
+                            <h4 class="font-bold text-sky-800 mb-2">2. Grammar: Asking & Answering Position</h4>
+                            <p class="text-sm mb-2"><strong>Pertanyaan:</strong></p>
+                            <ul class="list-disc pl-5 text-sm mb-3">
+                                <li><code>Where are you / they / we?</code></li>
+                                <li><code>Where is he / she / (nama orang)?</code></li>
+                            </ul>
+                            <p class="text-sm mb-2"><strong>Jawaban:</strong></p>
+                            <ul class="list-disc pl-5 text-sm space-y-1">
+                                <li><code>I am in the bedroom.</code> (Saya di kamar tidur)</li>
+                                <li><code>He is in the kitchen.</code> (Dia laki-laki di dapur)</li>
+                                <li><code>She is in the garden.</code> (Dia perempuan di kebun)</li>
+                                <li><code>They are in the living room.</code> (Mereka di ruang tamu)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="text-center pt-2">
+                <button onclick="startQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg text-lg">
+                    Saya Sudah Paham, Mulai Kuis! <i class="fa-solid fa-circle-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION KUIS 50 SOAL -->
+        <section id="secQuiz" class="hidden space-y-4 max-w-3xl mx-auto">
+            <!-- Quiz Header Stats Bar -->
+            <div class="bg-white rounded-2xl p-4 card-shadow border border-emerald-100 flex justify-between items-center">
+                <!-- Lives -->
+                <div class="flex items-center space-x-1">
+                    <span class="text-xs font-bold text-gray-500 mr-1">Nyawa:</span>
+                    <div id="quizLives" class="flex space-x-1 text-red-500 text-xl">
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div class="flex items-center space-x-2 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                    <i class="fa-solid fa-clock text-amber-500 animate-pulse"></i>
+                    <span id="quizTimer" class="font-bold text-amber-800 text-sm">30:00</span>
+                </div>
+
+                <!-- Progress Counter -->
+                <div class="text-right">
+                    <span class="text-xs text-gray-500">Soal Ke:</span>
+                    <span id="quizProgress" class="font-bold text-emerald-700 text-base">1 / 50</span>
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 card-shadow border-2 border-emerald-100 relative">
+                <!-- Question Text -->
+                <div class="mb-6">
+                    <span id="quizCategory" class="inline-block bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold mb-2">Bahasa Indonesia</span>
+                    <h3 id="quizQuestion" class="text-lg md:text-xl font-bold text-gray-800 leading-snug">
+                        Teks soal kuis akan ditampilkan di sini...
+                    </h3>
+                </div>
+
+                <!-- Answer Options -->
+                <div id="quizOptions" class="space-y-3">
+                    <!-- Dynamic Options Inserted Here -->
+                </div>
+
+                <!-- Footer Action -->
+                <div class="mt-6 flex justify-between items-center pt-4 border-t border-gray-100">
+                    <button onclick="confirmQuitQuiz()" class="text-xs text-gray-400 hover:text-red-500 font-semibold">
+                        <i class="fa-solid fa-door-open mr-1"></i> Menyerah
+                    </button>
+                    <span class="text-xs text-gray-400">Kelas III SD Negeri Banyurip</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION ICEBREAKING (TEBAK GAMBAR) -->
+        <section id="secIcebreaking" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow">
+                <button onclick="showSection('secMenu')" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                </button>
+                <h2 class="text-lg font-bold text-purple-700"><i class="fa-solid fa-gamepad mr-2"></i> Tebak Gambar & Kosakata</h2>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 card-shadow border-2 border-purple-100 text-center space-y-4">
+                <div class="bg-purple-50 p-6 rounded-2xl border border-purple-200">
+                    <div id="ibImage" class="text-7xl my-4 text-purple-600">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <p id="ibClue" class="text-sm font-semibold text-gray-600">Petunjuk: Tempat tidur dan istirahat di dalam rumah.</p>
+                </div>
+
+                <h3 id="ibQuestion" class="text-xl font-bold text-gray-800">Apa Nama Ruangan Ini dalam Bahasa Inggris?</h3>
+
+                <div id="ibOptions" class="grid grid-cols-2 gap-3">
+                    <!-- Options for Icebreaker -->
+                </div>
+
+                <div id="ibFeedback" class="hidden p-3 rounded-lg text-sm font-bold"></div>
+
+                <button id="btnNextIb" onclick="nextIcebreak()" class="hidden bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-xl shadow">
+                    Lanjut Gambar Berikutnya <i class="fa-solid fa-forward ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION HASIL & REVIEW KUIS -->
+        <section id="secResult" class="hidden space-y-6 max-w-3xl mx-auto">
+            <div class="bg-white rounded-3xl p-6 md:p-8 card-shadow border-2 border-emerald-100 text-center">
+                <div id="resultIcon" class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner">
+                    <!-- Icon Winner / Try Again -->
+                </div>
+
+                <h2 id="resultTitle" class="text-3xl font-bold text-gray-800 mb-2">Hasil Kuis Kamu!</h2>
+                <p id="resultMotivation" class="text-base text-gray-600 mb-6 px-4">Kata motivasi akan muncul di sini.</p>
+
+                <!-- Score Board -->
+                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6">
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+                        <span class="block text-xs text-gray-500">Nilai Akhir</span>
+                        <span id="resScore" class="text-2xl font-bold text-emerald-600">0</span>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+                        <span class="block text-xs text-gray-500">Benar</span>
+                        <span id="resCorrect" class="text-2xl font-bold text-blue-600">0 / 50</span>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200">
+                        <span class="block text-xs text-gray-500">Waktu Terpakai</span>
+                        <span id="resTime" class="text-2xl font-bold text-amber-600">00:00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="showCertificate()" id="btnCert" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl shadow text-sm flex items-center">
+                        <i class="fa-solid fa-certificate mr-2"></i> Lihat Sertifikat
+                    </button>
+                    <button onclick="toggleKeyReview()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow text-sm flex items-center">
+                        <i class="fa-solid fa-list-check mr-2"></i> Pembahasan & Kunci Jawaban
+                    </button>
+                    <button onclick="startQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow text-sm flex items-center">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
+                    </button>
+                </div>
+            </div>
+
+            <!-- Review Kunci Jawaban & Pembahasan -->
+            <div id="secKeyReview" class="hidden bg-white rounded-2xl p-6 card-shadow space-y-4">
+                <h3 class="text-xl font-bold text-gray-800 border-b pb-2 flex items-center">
+                    <i class="fa-solid fa-key text-amber-500 mr-2"></i> Pembahasan Lengkap 50 Soal Kuis
+                </h3>
+                <div id="keyReviewList" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+                    <!-- Dynamic key review inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION SERTIFIKAT -->
+        <section id="secCertificate" class="hidden space-y-4">
+            <div class="flex justify-between items-center max-w-4xl mx-auto">
+                <button onclick="showSection('secResult')" class="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded-lg text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Hasil
+                </button>
+                <button onclick="window.print()" class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg text-sm shadow">
+                    <i class="fa-solid fa-print mr-2"></i> Cetak / Simpan Sertifikat
+                </button>
+            </div>
+
+            <!-- Cert Paper Design -->
+            <div class="bg-white max-w-4xl mx-auto p-8 md:p-12 rounded-xl shadow-2xl border-8 border-double border-amber-600 text-center relative overflow-hidden my-4">
+                <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-amber-100 rounded-full opacity-30 pointer-events-none"></div>
+                <div class="absolute -left-16 -top-16 w-64 h-64 bg-emerald-100 rounded-full opacity-30 pointer-events-none"></div>
+
+                <!-- Header -->
+                <div class="border-b-2 border-amber-500 pb-4 mb-6">
+                    <h2 class="cert-font text-2xl md:text-4xl font-bold text-amber-900 tracking-wider">SERTIFIKAT PENGHARGAAN</h2>
+                    <p class="text-sm text-gray-600 mt-1 tracking-widest uppercase font-semibold">SD NEGERI BANYURIP • KELAS III</p>
+                </div>
+
+                <p class="text-gray-700 italic mb-2">Diberikan secara bangga kepada siswa:</p>
+                <h3 id="certStudentName" class="text-2xl md:text-4xl font-bold text-emerald-800 underline decoration-amber-500 decoration-2 mb-4 font-heading">
+                    Nama Siswa
+                </h3>
+
+                <p class="text-gray-700 max-w-2xl mx-auto text-sm md:text-base leading-relaxed mb-6">
+                    Telah berhasil menyelesaikan Kuis Evaluasi Pembelajaran Interaktif Kelas III SD materi 
+                    <strong>"Bahasa Indonesia (Bab 4) & Bahasa Inggris (Parts of House)"</strong> dengan nilai:
+                </p>
+
+                <!-- Score Badge -->
+                <div class="inline-block bg-amber-50 border-2 border-amber-400 px-8 py-3 rounded-2xl mb-8 shadow-inner">
+                    <span class="text-xs text-amber-800 font-bold block uppercase tracking-wider">Nilai Akhir</span>
+                    <span id="certScore" class="text-4xl font-extrabold text-amber-700">100</span>
+                </div>
+
+                <!-- Signatures -->
+                <div class="grid grid-cols-2 gap-8 pt-6 border-t border-gray-200 text-xs md:text-sm">
+                    <div>
+                        <p class="text-gray-500 mb-8">Banyurip, <span id="certDate">9 November 2026</span></p>
+                        <p class="font-bold text-gray-800">Siswa Pembelajar</p>
+                        <p class="text-gray-600 italic" id="certSignatureName">Nama Siswa</p>
+                    </div>
+
+                    <div>
+                        <p class="text-gray-500 mb-8">Guru Kelas III</p>
+                        <p class="font-bold text-emerald-900 underline text-base">Widowati SN, S.Pd.</p>
+                        <p class="text-gray-600">SD Negeri Banyurip</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER DEVELOPER -->
+    <footer class="bg-gray-800 text-gray-300 py-4 mt-8 text-center text-xs border-t-4 border-emerald-600">
+        <div class="max-w-5xl mx-auto px-4 space-y-1">
+            <p class="font-semibold text-emerald-400">Pengembang: Giga Innovation (081329200985)</p>
+            <p class="text-gray-400">Game Pembelajaran Interaktif Kelas III SD • SD Negeri Banyurip</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- GLOBAL VARIABLES ---
+        let studentName = "";
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizLives = 3;
+        let quizTimerSeconds = 30 * 60; // 30 mins
+        let quizInterval = null;
+        let userAnswers = [];
+        let activeQuestions = [];
+        let icebreakerIndex = 0;
+
+        // --- 50 SOAL KUIS GABUNGAN (25 BAHASA INDONESIA & 25 BAHASA INGGRIS) KELAS III ---
+        const questionBank = [
+            // ================= 25 SOAL BAHASA INDONESIA =================
+            { id: 1, q: "Syair lagu 'Nenek Moyangku' diciptakan oleh...", options: ["Ibu Sud", "Pak Kasur", "A.T. Mahmud", "W.R. Supratman"], a: 0, cat: "Bahasa Indonesia", exp: "Lagu Nenek Moyangku diciptakan oleh Ibu Sud." },
+            { id: 2, q: "Nenek moyang bangsa Indonesia dalam lagu 'Nenek Moyangku' berprofesi sebagai...", options: ["Petani", "Pelaut", "Pedagang", "Peternak"], a: 1, cat: "Bahasa Indonesia", exp: "Dalam lirik lagu dijelaskan: 'Nenek moyangku orang pelaut'." },
+            { id: 3, q: "Pilihan kata 'mengarung luas samudera' dalam lagu menunjukkan sikap nenek moyang yang...", options: ["Penakut", "Pemberani dan pantang menyerah", "Suka mengeluh", "Pemalas"], a: 1, cat: "Bahasa Indonesia", exp: "Mengarung samudera dan menerjang ombak melambangkan keberanian." },
+            { id: 4, q: "Gambar yang berfungsi untuk memperjelas maksud suatu cerita atau bacaan disebut...", options: ["Gambar ilustrasi", "Gambar peta", "Gambar denah", "Gambar bagan"], a: 0, cat: "Bahasa Indonesia", exp: "Gambar ilustrasi berfungsi memperjelas isi cerita." },
+            { id: 5, q: "Berikut ini yang bukan merupakan hal yang dinilai dari sebuah gambar ilustrasi adalah...", options: ["Kesesuaian gambar dengan cerita", "Pewarnaan gambar", "Harga kertas gambar", "Letak gambar dalam bacaan"], a: 2, cat: "Bahasa Indonesia", exp: "Yang dinilai dari gambar ilustrasi adalah kesesuaian gambar, pewarnaan, dan letaknya." },
+            { id: 6, q: "Menyampaikan pikiran atau pendapat tentang suatu gambar harus dilakukan secara...", options: ["Kasar dan keras", "Sopan dan disertai alasan", "Sombong", "Marah-marah"], a: 1, cat: "Bahasa Indonesia", exp: "Mengungkapkan pendapat harus menggunakan tutur kata sopan dan disertai alasan logis." },
+            { id: 7, q: "Hal terpenting atau ide utama yang dibahas dalam sebuah paragraf/bacaan dinamakan...", options: ["Ide pendukung", "Ide pokok", "Judul buku", "Sinopsis"], a: 1, cat: "Bahasa Indonesia", exp: "Ide pokok adalah gagasan inti yang dibahas di dalam bacaan." },
+            { id: 8, q: "Kalimat-kalimat yang berfungsi menjelaskan atau melengkapi ide pokok disebut...", options: ["Ide pendukung", "Ide utama", "Topik utama", "Judul cerita"], a: 0, cat: "Bahasa Indonesia", exp: "Ide pendukung/kalimat penjelas melengkapi ide pokok." },
+            { id: 9, q: "Kalimat yang subjeknya melakukan suatu tindakan disebut...", options: ["Kalimat pasif", "Kalimat aktif", "Kalimat tanya", "Kalimat perintah"], a: 1, cat: "Bahasa Indonesia", exp: "Kalimat aktif adalah kalimat yang subjeknya melakukan tindakan (biasanya berawalan me-)." },
+            { id: 10, q: "Kalimat yang subjeknya dikenai suatu tindakan dinamakan...", options: ["Kalimat aktif", "Kalimat pasif", "Kalimat ajakan", "Kalimat larangan"], a: 1, cat: "Bahasa Indonesia", exp: "Kalimat pasif adalah kalimat yang subjeknya dikenai tindakan (biasanya berawalan di-)." },
+            { id: 11, q: "Kata kerja pada kalimat aktif biasanya menggunakan imbuhan awalan...", options: ["di-", "ter-", "me-", "ke-"], a: 2, cat: "Bahasa Indonesia", exp: "Contoh kata kerja aktif: memupuk, mengejar, memasak." },
+            { id: 12, q: "Kata kerja pada kalimat pasif biasanya menggunakan imbuhan awalan...", options: ["me-", "di-", "ber-", "pen-"], a: 1, cat: "Bahasa Indonesia", exp: "Contoh kata kerja pasif: dirawat, dikejar, dimasak." },
+            { id: 13, q: "'Kakek memupuk tanaman padi.' Kalimat tersebut termasuk jenis...", options: ["Kalimat pasif", "Kalimat aktif", "Kalimat tanya", "Kalimat seru"], a: 1, cat: "Bahasa Indonesia", exp: "Subjek 'Kakek' melakukan tindakan 'memupuk'." },
+            { id: 14, q: "'Tanaman padi dirawat Kakek.' Kalimat tersebut merupakan bentuk...", options: ["Kalimat aktif", "Kalimat pasif", "Kalimat berita", "Kalimat perintah"], a: 1, cat: "Bahasa Indonesia", exp: "Subjek 'Tanaman padi' dikenai tindakan 'dirawat'." },
+            { id: 15, q: "'Kelinci mengejar Kucing.' Jika diubah menjadi kalimat pasif yang benar adalah...", options: ["Kucing mengejar Kelinci", "Kelinci dikejar Kucing", "Kucing dikejar Kelinci", "Kelinci memanggil Kucing"], a: 2, cat: "Bahasa Indonesia", exp: "Kalimat pasifnya: 'Kucing dikejar Kelinci'." },
+            { id: 16, q: "Pak Hasan menanam jagung di ladang. Pekerjaan Pak Hasan adalah...", options: ["Pedagang", "Petani", "Nelayan", "Peternak"], a: 1, cat: "Bahasa Indonesia", exp: "Orang yang bercocok tanam jagung di ladang adalah petani." },
+            { id: 17, q: "Pak Toni berjualan beras di pasar dengan jujur. Pekerjaan Pak Toni adalah...", options: ["Petani", "Pedagang", "Sopir", "Dokter"], a: 1, cat: "Bahasa Indonesia", exp: "Orang yang menjual barang/beras di pasar adalah pedagang." },
+            { id: 18, q: "Petugas yang menjaga keamanan dan mengatur lalu lintas di jalan adalah...", options: ["Polisi", "Pilot", "Nakhoda", "Guru"], a: 0, cat: "Bahasa Indonesia", exp: "Polisi bertugas menjaga ketertiban dan merapikan lalu lintas." },
+            { id: 19, q: "Petugas yang mengemudikan kapal laut untuk mengarungi samudera dinamakan...", options: ["Pilot", "Masinis", "Nakhoda", "Sopir"], a: 2, cat: "Bahasa Indonesia", exp: "Mengemudikan kapal laut adalah tugas seorang nakhoda." },
+            { id: 20, q: "Sikap yang baik saat menyampaikan kritik atau tanggapan terhadap pendapat teman adalah...", options: ["Berteriak membentak", "Menggunakan bahasa yang santun", "Mengejek usulannya", "Tertawa terbahak-bahak"], a: 1, cat: "Bahasa Indonesia", exp: "Kritik atau tanggapan disampaikan dengan santun dan sopan." },
+            { id: 21, q: "'Ibu memasak sayur di dapur.' Subjek (pelaku) dalam kalimat aktif ini adalah...", options: ["Ibu", "Memasak", "Sayur", "Di dapur"], a: 0, cat: "Bahasa Indonesia", exp: "Subjek (S) adalah Ibu, Predikat (P) memasak, Objek (O) sayur." },
+            { id: 22, q: "'Buku dibaca oleh Ani.' Kata 'dibaca' dalam kalimat tersebut berkedudukan sebagai...", options: ["Subjek", "Predikat", "Objek", "Keterangan"], a: 1, cat: "Bahasa Indonesia", exp: "'dibaca' adalah kata kerja (Predikat pasif)." },
+            { id: 23, q: "Ciri orang yang bertanggung jawab menurut bacaan karakter siswa adalah...", options: ["Bersedia mengambil risiko dan bersikap jujur serta mandiri", "Suka melempar kesalahan pada teman", "Pemalas dan suka berbohong", "Selalu menuntut imbalan uang"], a: 0, cat: "Bahasa Indonesia", exp: "Siswa bertanggung jawab bersifat jujur, adil, berani, dan mandiri." },
+            { id: 24, q: "Kalimat berikut yang merupakan contoh kalimat aktif adalah...", options: ["Roti dimakan oleh Adik", "Pintu ditutup Ayah", "Adik menyapu halaman rumah", "Baju dicuci Ibu"], a: 2, cat: "Bahasa Indonesia", exp: "'Adik menyapu halaman rumah' menggunakan kata kerja berawalan me- (aktif)." },
+            { id: 25, q: "Kalimat berikut yang merupakan contoh kalimat pasif adalah...", options: ["Beni membaca buku cerita", "Ikan digoreng oleh Ibu", "Kucing menangkap tikus", "Siti menyiram bunga"], a: 1, cat: "Bahasa Indonesia", exp: "'Ikan digoreng oleh Ibu' merupakan kalimat pasif (digoreng)." },
+
+            // ================= 25 SOAL BAHASA INGGRIS =================
+            { id: 26, q: "What is 'Kamar tidur' in English?", options: ["Bathroom", "Bedroom", "Kitchen", "Garage"], a: 1, cat: "Bahasa Inggris", exp: "'Bedroom' artinya kamar tidur." },
+            { id: 27, q: "What is 'Kamar mandi' in English?", options: ["Bedroom", "Bathroom", "Living room", "Dining room"], a: 1, cat: "Bahasa Inggris", exp: "'Bathroom' artinya kamar mandi." },
+            { id: 28, q: "We eat our lunch and dinner in the...", options: ["Bedroom", "Dining room", "Garage", "Roof"], a: 1, cat: "Bahasa Inggris", exp: "Dining room artinya ruang makan." },
+            { id: 29, q: "Mother is cooking soup in the...", options: ["Kitchen", "Bathroom", "Storage room", "Yard"], a: 0, cat: "Bahasa Inggris", exp: "Cooking (memasak) dilakukan di kitchen (dapur)." },
+            { id: 30, q: "Father parks his car in the...", options: ["Living room", "Garage", "Bedroom", "Kitchen"], a: 1, cat: "Bahasa Inggris", exp: "Garage artinya garasi tempat memarkir mobil/kendaraan." },
+            { id: 31, q: "We receive guests (tamu) or watch TV together in the...", options: ["Living room", "Bathroom", "Chimney", "Storage room"], a: 0, cat: "Bahasa Inggris", exp: "Living room artinya ruang tamu / ruang keluarga." },
+            { id: 32, q: "Children love playing football or gardening in the...", options: ["Bathroom", "Kitchen", "Yard / Garden", "Roof"], a: 2, cat: "Bahasa Inggris", exp: "Yard / Garden artinya halaman atau kebun rumah." },
+            { id: 33, q: "We store old items and unused boxes in the...", options: ["Dining room", "Storage room", "Bedroom", "Terrace"], a: 1, cat: "Bahasa Inggris", exp: "Storage room artinya gudang tempat menyimpan barang." },
+            { id: 34, q: "The top part covering the house is called...", options: ["Floor", "Roof", "Chimney", "Yard"], a: 1, cat: "Bahasa Inggris", exp: "Roof artinya atap rumah." },
+            { id: 35, q: "Smoke from the fireplace goes out through the...", options: ["Chimney", "Door", "Window", "Garage"], a: 0, cat: "Bahasa Inggris", exp: "Chimney artinya cerobong asap." },
+            { id: 36, q: "What is 'Teras rumah' in English?", options: ["Terrace", "Kitchen", "Bathroom", "Bedroom"], a: 0, cat: "Bahasa Inggris", exp: "Terrace artinya teras rumah." },
+            { id: 37, q: "Question: 'Where are you?' Answer: '...' (Saya di kamar tidur)", options: ["I am in the bedroom.", "She is in the kitchen.", "They are in the garden.", "He is in the garage."], a: 0, cat: "Bahasa Inggris", exp: "Pertanyaan 'Where are you?' dijawab dengan 'I am in the...'." },
+            { id: 38, q: "Ana: 'Where is your father?' Dana: '...' (Dia ada di dapur)", options: ["He is in the kitchen.", "I am in the living room.", "She is in the bathroom.", "They are in the yard."], a: 0, cat: "Bahasa Inggris", exp: "Father (Laki-laki) diganti 'He', maka 'He is in the kitchen'." },
+            { id: 39, q: "Niko: 'Where are Andy and Felix?' Tama: '...' (Mereka di kamar mandi)", options: ["He is in the bathroom.", "They are in the bathroom.", "I am in the kitchen.", "She is in the bedroom."], a: 1, cat: "Bahasa Inggris", exp: "Andy and Felix (banyak orang) menggunakan kata ganti 'They are'." },
+            { id: 40, q: "Diana: 'Where is your mother?' Ella: '...' (Dia ada di kebun)", options: ["She is in the garden.", "He is in the kitchen.", "I am in the garage.", "They are in the bedroom."], a: 0, cat: "Bahasa Inggris", exp: "Mother (Perempuan) diganti 'She', maka 'She is in the garden'." },
+            { id: 41, q: "In the story 'My Family at Home', where is mom cooking lunch?", options: ["In the bedroom", "In the kitchen", "In the garage", "In the yard"], a: 1, cat: "Bahasa Inggris", exp: "Mom is cooking lunch in the kitchen." },
+            { id: 42, q: "Who is cutting vegetables and helping mom in the kitchen?", options: ["Brother", "Dad", "Sister", "Grandma"], a: 1, cat: "Bahasa Inggris", exp: "Dad is cutting vegetables and helping mom in the kitchen." },
+            { id: 43, q: "What is the brother doing in the living room?", options: ["Playing with his toys on the floor", "Sleeping on the bed", "Washing dishes", "Watering flowers"], a: 0, cat: "Bahasa Inggris", exp: "Brother is playing with his toys on the floor." },
+            { id: 44, q: "Where is the sister drawing a picture and coloring it?", options: ["In the garage", "In her bedroom", "In the kitchen", "In the dining room"], a: 1, cat: "Bahasa Inggris", exp: "Sister is drawing in her bedroom." },
+            { id: 45, q: "How does the family feel at the end of the story?", options: ["Sad and scared", "Happy and safe together", "Angry and tired", "Hungry and noisy"], a: 1, cat: "Bahasa Inggris", exp: "The family feels happy and safe together." },
+            { id: 46, q: "Complete the sentence: 'I brush my teeth in the...'", options: ["Bathroom", "Kitchen", "Garage", "Roof"], a: 0, cat: "Bahasa Inggris", exp: "Menggosok gigi dilakukan di bathroom (kamar mandi)." },
+            { id: 47, q: "Complete the sentence: 'We watch TV together in the...'", options: ["Living room", "Storage room", "Bathroom", "Chimney"], a: 0, cat: "Bahasa Inggris", exp: "Watch TV (menonton TV) dilakukan di living room." },
+            { id: 48, q: "Traditional earthquake-resistant house from Minangkabau mentioned in Glimpse of Knowledge is...", options: ["Rumah Gadang", "Rumah Joglo", "Rumah Tongkonan", "Rumah Honai"], a: 0, cat: "Bahasa Inggris", exp: "Rumah Gadang terbuat dari kayu tahan gempa tanpa paku." },
+            { id: 49, q: "Why is Rumah Gadang earthquake-resistant?", options: ["Because it uses strong iron nails", "Because it rests on flat stones and uses wooden pegs", "Because it is built on water", "Because it has no roof"], a: 1, cat: "Bahasa Inggris", exp: "Pilar Rumah Gadang ditopang batu pipih dan menggunakan pasak kayu." },
+            { id: 50, q: "What do we do in the bedroom?", options: ["We sleep and take a rest", "We park our cars", "We cook food", "We take a shower"], a: 0, cat: "Bahasa Inggris", exp: "Bedroom (kamar tidur) berfungsi untuk tidur dan istirahat." }
+        ];
+
+        // --- ICEBREAKER GAME DATA ---
+        const icebreakerData = [
+            { icon: "fa-bed", clue: "Kamar tempat kita tidur dan beristirahat malam.", ans: "Bedroom", options: ["Bedroom", "Bathroom", "Kitchen", "Garage"] },
+            { icon: "fa-utensils", clue: "Ruangan tempat Ibu memasak makanan lezat.", ans: "Kitchen", options: ["Kitchen", "Living room", "Storage room", "Roof"] },
+            { icon: "fa-shower", clue: "Tempat mandi dan menggosok gigi setiap pagi.", ans: "Bathroom", options: ["Bathroom", "Bedroom", "Terrace", "Yard"] },
+            { icon: "fa-car", clue: "Tempat Ayah memarkirkan mobil agar aman.", ans: "Garage", options: ["Garage", "Dining room", "Kitchen", "Chimney"] },
+            { icon: "fa-seedling", clue: "Halaman tempat bermain dan menanam buah.", ans: "Yard / Garden", options: ["Yard / Garden", "Bathroom", "Storage room", "Bedroom"] }
+        ];
+
+        // --- CORE FUNCTIONS ---
+
+        function saveStudentName(e) {
+            e.preventDefault();
+            const val = document.getElementById("inputName").value.trim();
+            if(!val) return;
+            studentName = val;
+            document.getElementById("navStudentName").innerText = studentName;
+            document.getElementById("studentDisplay").classList.remove("hidden");
+            showSection("secMenu");
+        }
+
+        function showSection(id) {
+            const secs = ["secDashboard", "secMenu", "secMateri", "secQuiz", "secIcebreaking", "secResult", "secCertificate"];
+            secs.forEach(s => {
+                const el = document.getElementById(s);
+                if(el) el.classList.add("hidden");
+            });
+            document.getElementById(id).classList.remove("hidden");
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function goHome() {
+            if(studentName) {
+                showSection("secMenu");
+            } else {
+                showSection("secDashboard");
+            }
+        }
+
+        function shuffleArray(array) {
+            let cur = array.slice();
+            for (let i = cur.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cur[i], cur[j]] = [cur[j], cur[i]];
+            }
+            return cur;
+        }
+
+        // --- QUIZ LOGIC ---
+
+        function startQuiz() {
+            quizScore = 0;
+            currentQuizIndex = 0;
+            quizLives = 3;
+            quizTimerSeconds = 30 * 60; // 30 minutes
+            userAnswers = [];
+
+            // Clone & Shuffle Questions Option Order
+            activeQuestions = questionBank.map(q => {
+                const shuffledOpts = shuffleArray(q.options);
+                const newAnsIdx = shuffledOpts.indexOf(q.options[q.a]);
+                return {
+                    ...q,
+                    shuffledOptions: shuffledOpts,
+                    correctShuffledIndex: newAnsIdx
+                };
+            });
+
+            // Start Timer
+            clearInterval(quizInterval);
+            quizInterval = setInterval(updateTimer, 1000);
+
+            showSection("secQuiz");
+            renderQuestion();
+        }
+
+        function updateTimer() {
+            if(quizTimerSeconds <= 0) {
+                clearInterval(quizInterval);
+                finishQuiz();
+                return;
+            }
+            quizTimerSeconds--;
+            const mins = Math.floor(quizTimerSeconds / 60);
+            const secs = quizTimerSeconds % 60;
+            document.getElementById("quizTimer").innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function renderLives() {
+            const container = document.getElementById("quizLives");
+            container.innerHTML = "";
+            for(let i = 0; i < 3; i++) {
+                if(i < quizLives) {
+                    container.innerHTML += `<i class="fa-solid fa-heart animate-bounce"></i>`;
+                } else {
+                    container.innerHTML += `<i class="fa-regular fa-heart text-gray-300"></i>`;
+                }
+            }
+        }
+
+        function renderQuestion() {
+            renderLives();
+            const q = activeQuestions[currentQuizIndex];
+            
+            document.getElementById("quizCategory").innerText = q.cat;
+            document.getElementById("quizProgress").innerText = `${currentQuizIndex + 1} / ${activeQuestions.length}`;
+            document.getElementById("quizQuestion").innerText = `${currentQuizIndex + 1}. ${q.q}`;
+
+            const optContainer = document.getElementById("quizOptions");
+            optContainer.innerHTML = "";
+
+            q.shuffledOptions.forEach((optText, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 transition font-semibold text-gray-700 flex items-center justify-between text-sm md:text-base";
+                btn.onclick = () => handleAnswer(idx);
+                
+                const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                btn.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center font-bold mr-3 text-sm">${letter}</span>
+                        <span>${optText}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-gray-300"></i>
+                `;
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIndex) {
+            const q = activeQuestions[currentQuizIndex];
+            const isCorrect = (selectedIndex === q.correctShuffledIndex);
+
+            userAnswers.push({
+                question: q.q,
+                selected: q.shuffledOptions[selectedIndex],
+                correct: q.shuffledOptions[q.correctShuffledIndex],
+                isCorrect: isCorrect,
+                exp: q.exp
+            });
+
+            if(isCorrect) {
+                quizScore += 2; // 50 * 2 = 100 max score
+            } else {
+                quizLives--;
+                if(quizLives <= 0) {
+                    clearInterval(quizInterval);
+                    finishQuiz();
+                    return;
+                }
+            }
+
+            currentQuizIndex++;
+            if(currentQuizIndex < activeQuestions.length) {
+                renderQuestion();
+            } else {
+                clearInterval(quizInterval);
+                finishQuiz();
+            }
+        }
+
+        function confirmQuitQuiz() {
+            if(confirm("Apakah kamu yakin ingin menghentikan kuis ini? Progress akan hilang.")) {
+                clearInterval(quizInterval);
+                showSection("secMenu");
+            }
+        }
+
+        function finishQuiz() {
+            showSection("secResult");
+
+            const totalTimeSpent = (30 * 60) - quizTimerSeconds;
+            const mins = Math.floor(totalTimeSpent / 60);
+            const secs = totalTimeSpent % 60;
+            document.getElementById("resTime").innerText = `${mins}m ${secs}s`;
+
+            const correctCount = userAnswers.filter(a => a.isCorrect).length;
+            document.getElementById("resCorrect").innerText = `${correctCount} / 50`;
+            document.getElementById("resScore").innerText = quizScore;
+
+            const iconEl = document.getElementById("resultIcon");
+            const titleEl = document.getElementById("resultTitle");
+            const motivEl = document.getElementById("resultMotivation");
+            const btnCert = document.getElementById("btnCert");
+
+            if(quizScore === 100) {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                iconEl.className = "w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner";
+                iconEl.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
+                titleEl.innerText = "Luar Biasa! Sempurna! 🎉";
+                motivEl.innerText = `Selamat ${studentName}! Kamu menjawab semua soal Bahasa Indonesia & Bahasa Inggris dengan BENAR! Pertahankan prestasimu! 🌟`;
+                btnCert.classList.remove("hidden");
+            } else if(quizScore >= 70) {
+                iconEl.className = "w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner";
+                iconEl.innerHTML = `<i class="fa-solid fa-star"></i>`;
+                titleEl.innerText = "Hasil Yang Sangat Baik! 👍";
+                motivEl.innerText = `Kerja bagus ${studentName}! Pemahaman materi Kelas 3 kamu sudah sangat hebat. Tingkatkan sedikit lagi latihan agar bisa meraih nilai 100!`;
+                btnCert.classList.remove("hidden");
+            } else {
+                iconEl.className = "w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-inner";
+                iconEl.innerHTML = `<i class="fa-solid fa-heart-crack"></i>`;
+                titleEl.innerText = "Jangan Berkecil Hati! 💪";
+                motivEl.innerText = `Tetap semangat ${studentName}! Belajar adalah sebuah proses. Mari baca materi kembali dan coba kuis sekali lagi!`;
+                btnCert.classList.add("hidden");
+            }
+
+            renderKeyReview();
+        }
+
+        function renderKeyReview() {
+            const list = document.getElementById("keyReviewList");
+            list.innerHTML = "";
+
+            userAnswers.forEach((ans, idx) => {
+                const item = document.createElement("div");
+                item.className = `p-4 rounded-xl border ${ans.isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`;
+                
+                item.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <h4 class="font-bold text-gray-800 text-sm md:text-base">${idx + 1}. ${ans.question}</h4>
+                        <span class="${ans.isCorrect ? 'text-emerald-600' : 'text-red-500'} font-bold text-xs uppercase px-2 py-0.5 rounded bg-white shadow-sm ml-2">
+                            ${ans.isCorrect ? 'Benar' : 'Salah'}
+                        </span>
+                    </div>
+                    <div class="mt-2 text-xs md:text-sm space-y-1">
+                        <p class="text-gray-600">Jawabanmu: <span class="font-bold ${ans.isCorrect ? 'text-emerald-700' : 'text-red-600'}">${ans.selected}</span></p>
+                        ${!ans.isCorrect ? `<p class="text-gray-600">Kunci Jawaban Benar: <span class="font-bold text-emerald-700">${ans.correct}</span></p>` : ''}
+                        <p class="text-gray-500 italic mt-1 bg-white p-2 rounded border border-gray-100"><strong>Pembahasan:</strong> ${ans.exp}</p>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function toggleKeyReview() {
+            const sec = document.getElementById("secKeyReview");
+            sec.classList.toggle("hidden");
+            if(!sec.classList.contains("hidden")) {
+                sec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- SERTIFIKAT LOGIC ---
+
+        function showCertificate() {
+            showSection("secCertificate");
+            document.getElementById("certStudentName").innerText = studentName;
+            document.getElementById("certSignatureName").innerText = studentName;
+            document.getElementById("certScore").innerText = quizScore;
+            
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("certDate").innerText = today.toLocaleDateString('id-ID', options);
+        }
+
+        // --- ICEBREAKER LOGIC ---
+
+        function startIcebreaking() {
+            icebreakerIndex = 0;
+            showSection("secIcebreaking");
+            renderIcebreak();
+        }
+
+        function renderIcebreak() {
+            const data = icebreakerData[icebreakerIndex];
+            document.getElementById("ibImage").innerHTML = `<i class="fa-solid ${data.icon}"></i>`;
+            document.getElementById("ibClue").innerText = `Petunjuk: ${data.clue}`;
+            
+            const feedback = document.getElementById("ibFeedback");
+            feedback.classList.add("hidden");
+            document.getElementById("btnNextIb").classList.add("hidden");
+
+            const opts = document.getElementById("ibOptions");
+            opts.innerHTML = "";
+
+            data.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "w-full py-3 px-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 text-purple-900 rounded-xl font-bold text-sm transition";
+                btn.innerText = opt;
+                btn.onclick = () => checkIcebreak(opt, data.ans);
+                opts.appendChild(btn);
+            });
+        }
+
+        function checkIcebreak(selected, correct) {
+            const feedback = document.getElementById("ibFeedback");
+            feedback.classList.remove("hidden");
+
+            if(selected === correct) {
+                feedback.className = "p-3 rounded-lg text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Tepat Sekali! Jawabannya adalah ${correct}.`;
+            } else {
+                feedback.className = "p-3 rounded-lg text-sm font-bold bg-red-100 text-red-800 border border-red-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Kurang Tepat. Jawaban yang benar adalah ${correct}.`;
+            }
+
+            document.getElementById("btnNextIb").classList.remove("hidden");
+        }
+
+        function nextIcebreak() {
+            icebreakerIndex = (icebreakerIndex + 1) % icebreakerData.length;
+            renderIcebreak();
+        }
+    </script>
+</body>
+</html>
